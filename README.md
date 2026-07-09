@@ -1,12 +1,40 @@
-# all_D.eSystem_versions
+# Limine C Template
 
-Go to tags to sellect a D.eSystem version to download,the current version is 6.0.2 beta.
+This repository will demonstrate how to set up a basic x86-64 kernel in C using Limine.
 
-# What is D.eSystem
+It is recommended to cross reference the contents of this repository with [the Limine Bare Bones](https://osdev.wiki/wiki/Limine_Bare_Bones) OSDev wiki page.
 
-D.eSystem is the OS project from D.electronics which uses for its kernel the C programing language and it uses the Limine bootloader.
-Its build to run in VM or on real hardware,but it requires a 64 bit CPU and a UEFI firmware.
+## How to use this?
 
-# History from D.eSystem
+### Dependencies
 
-Every new D.eSystem update is gona to be added to this repo,and this repo shows the history of every D.eSystem version: https://github.com/D-electronics-scratch/Every-D.eSystem-version/blob/main/README.md
+Any `make` command depends on GNU make (`gmake`) and is expected to be run using it. This usually means using `make` on most GNU/Linux distros, or `gmake` on other non-GNU systems.
+
+All `make all*` targets depend on a GNU-compatible C toolchain capable of generating x86-64 ELF objects. Usually `gcc/binutils` or `clang/llvm/lld` provided by any x86-64 UNIX like (including Linux) distribution will suffice.
+
+Additionally, building an ISO with `make all` requires `xorriso`, and building a HDD/USB image with `make all-hdd` requires `sgdisk` (usually from `gdisk` or `gptfdisk` packages) and `mtools`.
+
+### Toolchain selection
+
+The `TOOLCHAIN` and `TOOLCHAIN_PREFIX` `make` variables can be used to set the toolchain. `TOOLCHAIN` can be set to `llvm` to use Clang/LLVM.
+
+For example:
+```
+make TOOLCHAIN=llvm
+```
+or:
+```
+make TOOLCHAIN_PREFIX=x86_64-elf-
+```
+
+### Makefile targets
+
+Running `make all` will compile the kernel (from the `kernel/` directory) and then generate a bootable ISO image.
+
+Running `make all-hdd` will compile the kernel and then generate a raw image suitable to be flashed onto a USB stick or hard drive/SSD.
+
+Running `make run` will build the kernel and a bootable ISO (equivalent to make all) and then run it using `qemu` (if installed).
+
+Running `make run-hdd` will build the kernel and a raw HDD image (equivalent to make all-hdd) and then run it using `qemu` (if installed).
+
+The `run-uefi` and `run-hdd-uefi` targets are equivalent to their non `-uefi` counterparts except that they boot `qemu` using a UEFI-compatible firmware.
